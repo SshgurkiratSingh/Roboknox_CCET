@@ -1,0 +1,133 @@
+[
+    {
+        "id": "led-cube-3x3x3",
+        "title": "3×3×3 LED Cube with Arduino",
+        "subtitle": "Build a programmable cube with animations and patterns.",
+        "level": "Intermediate",
+        "duration": "3 hours",
+        "highlights": [
+            "Soldering",
+            "3D wiring",
+            "Animation frames"
+        ],
+        "icon": "cube",
+        "path": "/workshops/led-cube-3x3x3#cube-studio",
+        "resources": [
+            {
+                "label": "Bill of Materials",
+                "href": "#"
+            },
+            {
+                "label": "Wiring Diagram",
+                "href": "#"
+            },
+            {
+                "label": "Arduino Code",
+                "href": "#"
+            },
+            {
+                "label": "Animation Frames",
+                "href": "#"
+            }
+        ],
+        "frames": [
+            [
+                [
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    1
+                ]
+            ],
+            [
+                [
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0
+                ]
+            ],
+            [
+                [
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    0
+                ]
+            ],
+            [
+                [
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1
+                ]
+            ]
+        ]
+    },
+    {
+        "id": "iot-basics",
+        "title": "IoT Basics",
+        "subtitle": "Connect devices to the cloud and visualize data.",
+        "level": "Beginner",
+        "duration": "2.5 hours",
+        "highlights": [
+            "ESP8266",
+            "MQTT",
+            "Dashboards"
+        ],
+        "icon": "cloud",
+        "path": "/workshops/iot-basics",
+        "resources": [
+            {
+                "label": "Setup Checklist",
+                "href": "#"
+            },
+            {
+                "label": "MQTT Examples",
+                "href": "#"
+            },
+            {
+                "label": "Dashboard Template",
+                "href": "#"
+            }
+        ],
+        "frames": []
+    }
+]
