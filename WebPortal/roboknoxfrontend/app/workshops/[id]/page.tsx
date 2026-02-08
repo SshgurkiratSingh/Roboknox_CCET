@@ -85,9 +85,9 @@ export default async function WorkshopPage({
     workshop.icon === "cube" && workshop.frames.length > 0;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-14">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="min-h-screen bg-slate-950 text-white min-w-full">
+      <div className="mx-auto flex w-full min-w-8xl flex-col gap-10 px-6 py-14">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <div className="flex flex-wrap items-center gap-3">
               <Link
@@ -97,7 +97,7 @@ export default async function WorkshopPage({
                 ← Back to projects
               </Link>
               <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300">
-                RASC Project
+                Roboknox Project
               </span>
             </div>
             <h1 className="mt-4 text-4xl font-semibold leading-tight">

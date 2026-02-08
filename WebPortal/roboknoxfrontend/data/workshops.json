@@ -100,34 +100,5 @@
                 ]
             ]
         ]
-    },
-    {
-        "id": "iot-basics",
-        "title": "IoT Basics",
-        "subtitle": "Connect devices to the cloud and visualize data.",
-        "level": "Beginner",
-        "duration": "2.5 hours",
-        "highlights": [
-            "ESP8266",
-            "MQTT",
-            "Dashboards"
-        ],
-        "icon": "cloud",
-        "path": "/workshops/iot-basics",
-        "resources": [
-            {
-                "label": "Setup Checklist",
-                "href": "#"
-            },
-            {
-                "label": "MQTT Examples",
-                "href": "#"
-            },
-            {
-                "label": "Dashboard Template",
-                "href": "#"
-            }
-        ],
-        "frames": []
     }
 ]

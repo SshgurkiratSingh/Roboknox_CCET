@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RASC - Robotics & Automation Society of CCET",
+  title: "Roboknox - Robotics Club of CCET",
   description:
-    "RASC Workshop Assets Library. Hands-on robotics and automation projects, guides, and resources from the Robotics & Automation Society of CCET.",
+    "Roboknox Workshop Assets Library. Hands-on robotics and automation projects, guides, and resources from the Roboknox club of CCET.",
 };
 
 export default function RootLayout({
