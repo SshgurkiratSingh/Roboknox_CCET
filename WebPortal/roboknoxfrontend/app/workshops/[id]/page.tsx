@@ -1,3 +1,4 @@
+import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import workshopsData from "../../../data/workshops.json";
@@ -17,7 +18,7 @@ type Workshop = {
 
 const workshops = workshopsData as Workshop[];
 
-const icons: Record<Workshop["icon"], JSX.Element> = {
+const icons: Record<Workshop["icon"], React.ReactElement> = {
   cube: (
     <svg viewBox="0 0 48 48" aria-hidden="true" className="h-14 w-14">
       <path
@@ -93,10 +94,10 @@ export default async function WorkshopPage({
                 href="/"
                 className="text-sm text-slate-400 transition hover:text-emerald-300"
               >
-                ← Back to workshops
+                ← Back to projects
               </Link>
               <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300">
-                Roboknox Workshop
+                RASC Project
               </span>
             </div>
             <h1 className="mt-4 text-4xl font-semibold leading-tight">
@@ -133,9 +134,9 @@ export default async function WorkshopPage({
           <>
             <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
               <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6">
-                <h2 className="text-xl font-semibold">Workshop assets</h2>
+                <h2 className="text-xl font-semibold">Project Resources</h2>
                 <p className="mt-2 text-sm text-slate-400">
-                  All resources below are pulled from JSON for this workshop.
+                  All resources below are pulled from JSON for this project.
                 </p>
                 <div className="mt-5 grid gap-3">
                   {workshop.resources.map((resource) => (
@@ -151,7 +152,7 @@ export default async function WorkshopPage({
                 </div>
               </div>
 
-              <div className="rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900/70 via-slate-950/60 to-emerald-950/30 p-6">
+              <div className="rounded-3xl border border-slate-800 bg-linear-to-br from-slate-900/70 via-slate-950/60 to-emerald-950/30 p-6">
                 <h2 className="text-xl font-semibold">Quick plan</h2>
                 <ul className="mt-4 space-y-4 text-sm text-slate-300">
                   <li className="flex items-start gap-3">
@@ -189,7 +190,9 @@ export default async function WorkshopPage({
                       key={`frame-${index}`}
                       className="rounded-2xl border border-emerald-400/20 bg-slate-950/70 p-4"
                     >
-                      <p className="text-xs text-slate-400">Frame {index + 1}</p>
+                      <p className="text-xs text-slate-400">
+                        Frame {index + 1}
+                      </p>
                       <div className="mt-3 grid grid-cols-3 gap-2">
                         {frame.map((row, rowIndex) =>
                           row.map((cell, colIndex) => (

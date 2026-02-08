@@ -81,7 +81,8 @@ export default function LedCubeStudio({ initialFrames }: LedCubeStudioProps) {
           return frameData;
         }
         const newCube = cloneCube(frameData.cube);
-        newCube[z][y][x] = forceValue !== undefined ? forceValue : newCube[z][y][x] ? 0 : 1;
+        newCube[z][y][x] =
+          forceValue !== undefined ? forceValue : newCube[z][y][x] ? 0 : 1;
         return { ...frameData, cube: newCube };
       });
       saveToHistory(updated);
@@ -108,7 +109,7 @@ export default function LedCubeStudio({ initialFrames }: LedCubeStudioProps) {
       const updated = prev.map((frameData, index) => {
         if (index !== activeFrameIndex) return frameData;
         const newCube = makeEmptyCube();
-        
+
         switch (pattern) {
           case "all":
             for (let z = 0; z < 3; z++)
@@ -119,11 +120,23 @@ export default function LedCubeStudio({ initialFrames }: LedCubeStudioProps) {
             for (let z = 0; z < 3; z++)
               for (let y = 0; y < 3; y++)
                 for (let x = 0; x < 3; x++)
-                  if (x === 0 || x === 2 || y === 0 || y === 2 || z === 0 || z === 2)
+                  if (
+                    x === 0 ||
+                    x === 2 ||
+                    y === 0 ||
+                    y === 2 ||
+                    z === 0 ||
+                    z === 2
+                  )
                     newCube[z][y][x] = 1;
             break;
           case "corners":
-            [[0,0],[0,2],[2,0],[2,2]].forEach(([y,x]) => {
+            [
+              [0, 0],
+              [0, 2],
+              [2, 0],
+              [2, 2],
+            ].forEach(([y, x]) => {
               newCube[0][y][x] = 1;
               newCube[2][y][x] = 1;
             });
@@ -144,7 +157,7 @@ export default function LedCubeStudio({ initialFrames }: LedCubeStudioProps) {
                   newCube[z][y][x] = Math.random() > 0.5 ? 1 : 0;
             break;
         }
-        
+
         return { ...frameData, cube: newCube };
       });
       saveToHistory(updated);
@@ -155,7 +168,9 @@ export default function LedCubeStudio({ initialFrames }: LedCubeStudioProps) {
   const updateFrameDelay = (delay: number) => {
     setFrames((prev) =>
       prev.map((frameData, index) =>
-        index === activeFrameIndex ? { ...frameData, delayMs: delay } : frameData,
+        index === activeFrameIndex
+          ? { ...frameData, delayMs: delay }
+          : frameData,
       ),
     );
   };
@@ -198,17 +213,107 @@ export default function LedCubeStudio({ initialFrames }: LedCubeStudioProps) {
   };
 
   const generatedCode = useMemo(() => {
-    const structDef = `struct Frame {\n  int leds[3][3][3];\n  int delayMs;\n};`;
-
-    const frameStrings = frames.map((frameData, idx) => {
-      const layerStrings = frameData.cube.map((layer) => {
-        const rows = layer.map((row) => `      { ${row.join(", ")} }`);
-        return `    {\n${rows.join(",\n")}\n    }`;
+    const frameStrings = frames.map((frameData) => {
+      const layerData = frameData.cube.map((layer) => {
+        const rows = layer.map((row) => `        { ${row.join(", ")} }`);
+        return `      {\n${rows.join(",\n")}\n      }`;
       });
-      return `  {\n    {\n${layerStrings.join(",\n")}\n    },\n    ${frameData.delayMs}\n  }`;
+      return `    { { ${layerData.join(", ")} }, ${frameData.delayMs} }`;
     });
 
-    return `// Roboknox LED Cube (3x3x3)\n// Total frames: ${frames.length}\n\n${structDef}\n\nconst int FRAME_COUNT = ${frames.length};\n\nFrame frames[FRAME_COUNT] = {\n${frameStrings.join(",\n")}\n};\n\nvoid renderFrame(int frameIndex) {\n  // Map frames[frameIndex].leds[z][y][x] to your pins\n  // z = layer (0-2), y = row (0-2), x = column (0-2)\n  for (int z = 0; z < 3; z++) {\n    for (int y = 0; y < 3; y++) {\n      for (int x = 0; x < 3; x++) {\n        // digitalWrite(ledPins[z][y][x], frames[frameIndex].leds[z][y][x]);\n      }\n    }\n  }\n}\n\nvoid playAnimation() {\n  for (int i = 0; i < FRAME_COUNT; i++) {\n    renderFrame(i);\n    delay(frames[i].delayMs);\n  }\n}`;
+    return `/*
+ * 3x3x3 LED Cube - Arduino Code
+ * Configuration:
+ * 9 Column Pins (Anodes): Connected to digital pins 2 through 10
+ * 3 Layer Pins (Cathodes): Connected to digital pins 11, 12, 13
+ */
+
+// Pin Definitions
+const int columnPins[9] = {2, 3, 4, 5, 6, 7, 8, 9, 10};
+const int layerPins[3] = {11, 12, 13};
+
+// Frame structure with per-layer delay
+struct Frame {
+  int leds[3][3][3];
+  int delayMs;
+};
+
+const int FRAME_COUNT = ${frames.length};
+
+Frame frames[FRAME_COUNT] = {
+${frameStrings.join(",\n")}
+};
+
+void setup() {
+  // Initialize Columns (Anodes) as OUTPUT and set to LOW (OFF)
+  for (int i = 0; i < 9; i++) {
+    pinMode(columnPins[i], OUTPUT);
+    digitalWrite(columnPins[i], LOW);
+  }
+
+  // Initialize Layers (Cathodes) as OUTPUT and set to HIGH (OFF)
+  // Layers are active LOW, so HIGH means they are disconnected/off.
+  for (int i = 0; i < 3; i++) {
+    pinMode(layerPins[i], OUTPUT);
+    digitalWrite(layerPins[i], HIGH);
+  }
+}
+
+/**
+ * Displays a 3D pattern on the LED cube for a specific duration.
+ *
+ * @param pattern  A 3x3 array representing the cube state.
+ * Dimensions: [Layer][Row][Column]
+ * Data Format: 9 LEDs per layer (one per column).
+ * Each value (0 or 1) controls whether the LED is on or off.
+ *
+ * @param duration Duration to display this pattern in milliseconds.
+ */
+void displayPattern(int pattern[3][3][3], unsigned long duration) {
+  unsigned long startTime = millis();
+
+  // Loop until the requested duration has passed
+  while (millis() - startTime < duration) {
+
+    // Iterate through each layer (0 to 2)
+    for (int layer = 0; layer < 3; layer++) {
+
+      // Step 1: Prepare the Column Data for the current layer
+      for (int row = 0; row < 3; row++) {
+        for (int col = 0; col < 3; col++) {
+          if (pattern[layer][row][col] == 1) {
+            digitalWrite(columnPins[row * 3 + col], HIGH); // Anode HIGH (Power)
+          } else {
+            digitalWrite(columnPins[row * 3 + col], LOW);  // Anode LOW (No Power)
+          }
+        }
+      }
+
+      // Step 2: Activate the Layer (Common Cathode)
+      // Pull LOW to connect to Ground and complete the circuit
+      digitalWrite(layerPins[layer], LOW);
+
+      // Step 3: Persistence of Vision Delay
+      // Short delay to allow the eye to register the light.
+      // 3ms * 3 layers = 9ms per frame (approx 111Hz refresh rate)
+      delay(3);
+
+      // Step 4: Deactivate the Layer (Ghosting Prevention)
+      // Turn off layer BEFORE changing columns for the next cycle.
+      digitalWrite(layerPins[layer], HIGH);
+    }
+  }
+}
+
+void playAnimation() {
+  for (int i = 0; i < FRAME_COUNT; i++) {
+    displayPattern(frames[i].leds, frames[i].delayMs);
+  }
+}
+
+void loop() {
+  playAnimation();
+}`;
   }, [frames]);
 
   const handleCopy = async () => {
@@ -342,7 +447,7 @@ export default function LedCubeStudio({ initialFrames }: LedCubeStudioProps) {
                 All Layers
               </button>
             </div>
-            
+
             <label className="flex items-center gap-2 text-xs">
               <input
                 type="checkbox"
@@ -376,7 +481,9 @@ export default function LedCubeStudio({ initialFrames }: LedCubeStudioProps) {
                     Single layer grid - Select layer and click LEDs to toggle
                   </p>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-500">Active Layer:</span>
+                    <span className="text-xs text-slate-500">
+                      Active Layer:
+                    </span>
                     <div className="flex gap-1">
                       {[0, 1, 2].map((z) => (
                         <button
@@ -626,7 +733,7 @@ export default function LedCubeStudio({ initialFrames }: LedCubeStudioProps) {
               Copy code
             </button>
           </div>
-          <pre className="mt-4 h-[320px] overflow-auto rounded-2xl border border-slate-800 bg-slate-900/60 p-4 text-xs text-slate-200">
+          <pre className="mt-4 h-80 overflow-auto rounded-2xl border border-slate-800 bg-slate-900/60 p-4 text-xs text-slate-200">
             {generatedCode}
           </pre>
         </div>
