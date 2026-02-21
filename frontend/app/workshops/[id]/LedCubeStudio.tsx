@@ -130,7 +130,7 @@ export default function LedCubeStudio({ initialFrames }: LedCubeStudioProps) {
   const [sceneName, setSceneName] = useState("My Scene");
   const [sceneDescription, setSceneDescription] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // 3D LED Box component
   const Led3DBox = ({ isOn, size = 40 }: { isOn: boolean; size?: number }) => {
@@ -662,11 +662,10 @@ void loop() {
                   key={`frame-${index}`}
                   type="button"
                   onClick={() => setActiveFrameIndex(index)}
-                  className={`h-9 w-9 rounded-xl border text-xs font-semibold transition ${
-                    activeFrameIndex === index
+                  className={`h-9 w-9 rounded-xl border text-xs font-semibold transition ${activeFrameIndex === index
                       ? "border-emerald-400 bg-emerald-400/20 text-emerald-200"
                       : "border-slate-700 text-slate-400 hover:border-slate-500"
-                  }`}
+                    }`}
                 >
                   {index + 1}
                 </button>
@@ -727,33 +726,30 @@ void loop() {
               <button
                 type="button"
                 onClick={() => setViewMode("grid")}
-                className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
-                  viewMode === "grid"
+                className={`rounded-full px-3 py-1 text-xs font-semibold transition ${viewMode === "grid"
                     ? "bg-emerald-400/20 text-emerald-300"
                     : "text-slate-400 hover:text-slate-300"
-                }`}
+                  }`}
               >
                 Grid
               </button>
               <button
                 type="button"
                 onClick={() => setViewMode("3d")}
-                className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
-                  viewMode === "3d"
+                className={`rounded-full px-3 py-1 text-xs font-semibold transition ${viewMode === "3d"
                     ? "bg-emerald-400/20 text-emerald-300"
                     : "text-slate-400 hover:text-slate-300"
-                }`}
+                  }`}
               >
                 3D
               </button>
               <button
                 type="button"
                 onClick={() => setViewMode("layers")}
-                className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
-                  viewMode === "layers"
+                className={`rounded-full px-3 py-1 text-xs font-semibold transition ${viewMode === "layers"
                     ? "bg-emerald-400/20 text-emerald-300"
                     : "text-slate-400 hover:text-slate-300"
-                }`}
+                  }`}
               >
                 All Layers
               </button>
@@ -786,11 +782,10 @@ void loop() {
             <button
               type="button"
               onClick={togglePlayback}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                isPlaying
+              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${isPlaying
                   ? "border border-red-500/40 text-red-200 hover:border-red-400"
                   : "border border-emerald-400/40 text-emerald-200 hover:border-emerald-300"
-              }`}
+                }`}
             >
               {isPlaying ? "⏹ Stop Animation" : "▶ Play Animation"}
             </button>
@@ -813,11 +808,10 @@ void loop() {
                           key={`layer-select-${z}`}
                           type="button"
                           onClick={() => setActiveLayer(z)}
-                          className={`h-8 w-16 rounded-lg border text-xs font-semibold transition ${
-                            activeLayer === z
+                          className={`h-8 w-16 rounded-lg border text-xs font-semibold transition ${activeLayer === z
                               ? "border-emerald-400 bg-emerald-400/20 text-emerald-300"
                               : "border-slate-700 text-slate-400 hover:border-slate-500"
-                          }`}
+                            }`}
                         >
                           Layer {z}
                         </button>
@@ -842,11 +836,10 @@ void loop() {
                                 toggleLed(x, y, activeLayer, 1);
                               }
                             }}
-                            className={`h-16 w-16 rounded-xl border-2 transition hover:scale-105 ${
-                              cell
+                            className={`h-16 w-16 rounded-xl border-2 transition hover:scale-105 ${cell
                                 ? "border-emerald-400 bg-emerald-400/90 shadow-[0_0_20px_rgba(52,211,153,0.8)]"
                                 : "border-slate-600 bg-slate-900/80 hover:border-emerald-400/60"
-                            }`}
+                              }`}
                             title={`LED [${x}, ${y}, ${activeLayer}]`}
                           >
                             <span className="text-[8px] text-slate-500">
@@ -911,11 +904,10 @@ void loop() {
                                   toggleLed(led.x, led.y, led.z, 1);
                                 }
                               }}
-                              className={`h-10 w-10 rounded-lg border transition hover:scale-110 ${
-                                led.on
+                              className={`h-10 w-10 rounded-lg border transition hover:scale-110 ${led.on
                                   ? "border-emerald-400 bg-emerald-400/90 shadow-[0_0_15px_rgba(52,211,153,0.8)]"
                                   : "border-slate-600 bg-slate-900/60 hover:border-emerald-400/60"
-                              }`}
+                                }`}
                               style={{
                                 backfaceVisibility: "visible",
                               }}
@@ -974,11 +966,10 @@ void loop() {
                         key={`layer-btn-${z}`}
                         type="button"
                         onClick={() => setActiveLayer(z)}
-                        className={`h-8 w-8 rounded-lg border text-xs font-semibold transition ${
-                          activeLayer === z
+                        className={`h-8 w-8 rounded-lg border text-xs font-semibold transition ${activeLayer === z
                             ? "border-emerald-400 bg-emerald-400/20 text-emerald-300"
                             : "border-slate-700 text-slate-400 hover:border-slate-500"
-                        }`}
+                          }`}
                       >
                         L{z}
                       </button>
@@ -992,11 +983,10 @@ void loop() {
                         Layer {z}
                       </p>
                       <div
-                        className={`grid grid-cols-3 gap-2 rounded-xl border p-3 transition ${
-                          activeLayer === z
+                        className={`grid grid-cols-3 gap-2 rounded-xl border p-3 transition ${activeLayer === z
                             ? "border-emerald-400/40 bg-emerald-400/5"
                             : "border-slate-800 bg-slate-900/40"
-                        }`}
+                          }`}
                       >
                         {activeCube[z].map((row, y) =>
                           row.map((cell, x) => (
@@ -1009,11 +999,10 @@ void loop() {
                                   toggleLed(x, y, z, 1);
                                 }
                               }}
-                              className={`h-10 w-10 rounded-lg border transition hover:scale-105 ${
-                                cell
+                              className={`h-10 w-10 rounded-lg border transition hover:scale-105 ${cell
                                   ? "border-emerald-400 bg-emerald-400/90 shadow-[0_0_12px_rgba(52,211,153,0.6)]"
                                   : "border-slate-700 bg-slate-900/60 hover:border-emerald-400/60"
-                              }`}
+                                }`}
                               title={`[${x}, ${y}, ${z}]`}
                             />
                           )),
@@ -1138,11 +1127,10 @@ void loop() {
                     <button
                       type="button"
                       onClick={togglePlayback}
-                      className={`w-full rounded-full px-4 py-3 text-sm font-semibold transition ${
-                        isPlaying
+                      className={`w-full rounded-full px-4 py-3 text-sm font-semibold transition ${isPlaying
                           ? "border border-red-500/40 bg-red-500/10 text-red-200 hover:border-red-400"
                           : "border border-emerald-400/40 bg-emerald-400/10 text-emerald-200 hover:border-emerald-300"
-                      }`}
+                        }`}
                     >
                       {isPlaying ? "⏹ Stop" : "▶ Play"}
                     </button>
@@ -1267,11 +1255,10 @@ void loop() {
                   <button
                     type="button"
                     onClick={togglePlayback}
-                    className={`rounded-full px-3 py-2 text-xs font-semibold transition ${
-                      isPlaying
+                    className={`rounded-full px-3 py-2 text-xs font-semibold transition ${isPlaying
                         ? "border border-red-500/40 bg-red-500/10 text-red-200 hover:border-red-400"
                         : "border border-emerald-400/40 bg-emerald-400/10 text-emerald-200 hover:border-emerald-300"
-                    }`}
+                      }`}
                   >
                     {isPlaying ? "⏹ Stop" : "▶ Play"}
                   </button>

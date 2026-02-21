@@ -92,7 +92,7 @@ export default function Home() {
           <div className="flex flex-wrap items-center gap-6">
             <div className="relative h-20 w-20 overflow-hidden rounded-2xl border-2 border-emerald-400/30 bg-emerald-400/10">
               <Image
-                src="/robo.jpg"
+                src="/robo.png"
                 alt="Roboknox Logo"
                 fill
                 className="object-cover"
