@@ -4,10 +4,9 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
-import Link from "next/link";
+import { Card } from "@/components/ui/Card";
 
 type Widget = {
   id: string;
@@ -47,7 +46,6 @@ const generateId = () =>
   `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
 export default function IoTDashboard() {
-  const [isSupported, setIsSupported] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [config, setConfig] = useState<MQTTConfig>({
     broker: "broker.mqtt.cool",
@@ -89,11 +87,8 @@ export default function IoTDashboard() {
     topic: "",
   });
 
-  const mqttRef = useRef<any>(null);
-
   useEffect(() => {
     // MQTT.js would be loaded from CDN or npm
-    setIsSupported(true);
   }, []);
 
   const appendLog = useCallback((entry: Omit<LogEntry, "id" | "timestamp">) => {
@@ -236,7 +231,7 @@ export default function IoTDashboard() {
   const statusBadge = useMemo(
     () =>
       isConnected ? (
-        <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300">
+        <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-neon">
           Connected
         </span>
       ) : (
@@ -248,9 +243,9 @@ export default function IoTDashboard() {
   );
 
   const TextDisplayWidget = ({ widget }: { widget: Widget }) => (
-    <div className="rounded-2xl border border-slate-700 bg-slate-950/60 p-4">
-      <p className="text-xs text-slate-400">{widget.name}</p>
-      <p className="mt-2 text-2xl font-semibold text-emerald-300">
+    <div className="rounded-2xl border border-slate-700 bg-[#111111] p-4">
+      <p className="text-xs text-secondary">{widget.name}</p>
+      <p className="mt-2 text-2xl font-semibold text-neon">
         {widget.value}
         {widget.unit && <span className="ml-1 text-sm">{widget.unit}</span>}
       </p>
@@ -264,11 +259,11 @@ export default function IoTDashboard() {
         ((widget.max || 100) - (widget.min || 0))) *
       100;
     return (
-      <div className="rounded-2xl border border-slate-700 bg-slate-950/60 p-4">
+      <div className="rounded-2xl border border-slate-700 bg-[#111111] p-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs text-slate-400">{widget.name}</p>
-            <p className="mt-2 text-2xl font-semibold text-emerald-300">
+            <p className="text-xs text-secondary">{widget.name}</p>
+            <p className="mt-2 text-2xl font-semibold text-neon">
               {widget.value}
               {widget.unit && <span className="ml-1 text-sm">{widget.unit}</span>}
             </p>
@@ -313,37 +308,35 @@ export default function IoTDashboard() {
   };
 
   const ToggleWidget = ({ widget }: { widget: Widget }) => (
-    <div className="rounded-2xl border border-slate-700 bg-slate-950/60 p-4">
-      <p className="text-xs text-slate-400">{widget.name}</p>
+    <div className="rounded-2xl border border-slate-700 bg-[#111111] p-4">
+      <p className="text-xs text-secondary">{widget.name}</p>
       <button
         onClick={() =>
           updateWidgetValue(widget.id, !widget.value)
         }
-        className={`mt-3 h-10 w-16 rounded-full border-2 transition ${
-          widget.value
-            ? "border-emerald-400 bg-emerald-400/20"
-            : "border-slate-600 bg-slate-800/60"
-        }`}
+        className={`mt-3 h-10 w-16 rounded-full border-2 transition ${widget.value
+          ? "border-neon bg-emerald-400/20"
+          : "border-slate-600 bg-slate-800/60"
+          }`}
       >
         <div
-          className={`h-8 w-8 rounded-full bg-white transition ${
-            widget.value ? "translate-x-6" : "translate-x-1"
-          }`}
+          className={`h-8 w-8 rounded-full bg-white transition ${widget.value ? "translate-x-6" : "translate-x-1"
+            }`}
         />
       </button>
       <p className="mt-2 text-xs text-slate-500">{widget.topic}</p>
-      <p className="mt-1 text-sm font-semibold text-emerald-300">
+      <p className="mt-1 text-sm font-semibold text-neon">
         {widget.value ? "ON" : "OFF"}
       </p>
     </div>
   );
 
   const ButtonWidget = ({ widget }: { widget: Widget }) => (
-    <div className="rounded-2xl border border-slate-700 bg-slate-950/60 p-4">
-      <p className="text-xs text-slate-400">{widget.name}</p>
+    <div className="rounded-2xl border border-slate-700 bg-[#111111] p-4">
+      <p className="text-xs text-secondary">{widget.name}</p>
       <button
         onClick={() => updateWidgetValue(widget.id, "pressed")}
-        className="mt-3 w-full rounded-full border border-emerald-400/40 px-4 py-3 text-sm font-semibold text-emerald-300 transition hover:border-emerald-300"
+        className="mt-3 w-full rounded-full border border-neon/40 px-4 py-3 text-sm font-semibold text-neon transition hover:border-emerald-300"
       >
         Press Button
       </button>
@@ -352,11 +345,11 @@ export default function IoTDashboard() {
   );
 
   const SliderWidget = ({ widget }: { widget: Widget }) => (
-    <div className="rounded-2xl border border-slate-700 bg-slate-950/60 p-4">
+    <div className="rounded-2xl border border-slate-700 bg-[#111111] p-4">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs text-slate-400">{widget.name}</p>
-          <p className="mt-2 text-2xl font-semibold text-emerald-300">
+          <p className="text-xs text-secondary">{widget.name}</p>
+          <p className="mt-2 text-2xl font-semibold text-neon">
             {widget.value}
           </p>
         </div>
@@ -393,34 +386,28 @@ export default function IoTDashboard() {
   };
 
   return (
-    <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+    <section className="p-8 w-full max-w-[1400px] mx-auto grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
       {/* Main Content */}
-      <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+      <Card className="p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6 border-b border-[#1a1a1a] pb-4">
           <div>
-            <h2 className="text-2xl font-semibold">IoT Dashboard</h2>
-            <p className="mt-2 text-sm text-slate-400">{statusMessage}</p>
+            <h2 className="font-display font-bold text-white text-xl tracking-wider">{"// IOT_DASHBOARD"}</h2>
+            <p className="mt-2 text-sm text-secondary font-mono">{statusMessage}</p>
           </div>
           <div className="flex items-center gap-2">
             {statusBadge}
-            <Link
-              href="/"
-              className="text-xs rounded px-3 py-1 border border-slate-600 text-slate-400 hover:border-slate-500 transition"
-            >
-              ← Home
-            </Link>
           </div>
         </div>
 
         <div className="mt-6 grid gap-4">
           {/* Broker Configuration */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
+          <div className="rounded-2xl border border-slate-800 bg-[#111111] p-4">
             <h3 className="text-sm font-semibold text-slate-200 mb-3">
               MQTT Broker
             </h3>
             <div className="grid gap-3">
               <div>
-                <label className="text-xs text-slate-400">Broker Address</label>
+                <label className="text-xs text-secondary">Broker Address</label>
                 <input
                   type="text"
                   value={config.broker}
@@ -434,7 +421,7 @@ export default function IoTDashboard() {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-xs text-slate-400">Port</label>
+                  <label className="text-xs text-secondary">Port</label>
                   <input
                     type="number"
                     value={config.port}
@@ -446,7 +433,7 @@ export default function IoTDashboard() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400">Client ID</label>
+                  <label className="text-xs text-secondary">Client ID</label>
                   <input
                     type="text"
                     value={config.clientId}
@@ -460,7 +447,7 @@ export default function IoTDashboard() {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-xs text-slate-400">Username</label>
+                  <label className="text-xs text-secondary">Username</label>
                   <input
                     type="text"
                     value={config.username || ""}
@@ -472,7 +459,7 @@ export default function IoTDashboard() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400">Password</label>
+                  <label className="text-xs text-secondary">Password</label>
                   <input
                     type="password"
                     value={config.password || ""}
@@ -488,7 +475,7 @@ export default function IoTDashboard() {
                 {!isConnected ? (
                   <button
                     onClick={connect}
-                    className="flex-1 rounded-full border border-emerald-400/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:border-emerald-300"
+                    className="flex-1 rounded-full border border-neon/40 px-4 py-2 text-sm font-semibold text-neon transition hover:border-emerald-300"
                   >
                     Connect
                   </button>
@@ -511,17 +498,17 @@ export default function IoTDashboard() {
               <button
                 onClick={() => setShowAddWidget(!showAddWidget)}
                 disabled={!isConnected}
-                className="text-xs rounded px-2 py-1 border border-emerald-400/40 text-emerald-300 hover:border-emerald-300 transition disabled:opacity-40"
+                className="text-xs rounded px-2 py-1 border border-neon/40 text-neon hover:border-emerald-300 transition disabled:opacity-40"
               >
                 + Add Widget
               </button>
             </div>
 
             {showAddWidget && (
-              <div className="mb-4 rounded-2xl border border-slate-700 bg-slate-950/60 p-4">
+              <div className="mb-4 rounded-2xl border border-slate-700 bg-[#111111] p-4">
                 <div className="grid gap-3">
                   <div>
-                    <label className="text-xs text-slate-400">Widget Name</label>
+                    <label className="text-xs text-secondary">Widget Name</label>
                     <input
                       type="text"
                       value={newWidgetConfig.name}
@@ -536,7 +523,7 @@ export default function IoTDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">MQTT Topic</label>
+                    <label className="text-xs text-secondary">MQTT Topic</label>
                     <input
                       type="text"
                       value={newWidgetConfig.topic}
@@ -551,7 +538,7 @@ export default function IoTDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Widget Type</label>
+                    <label className="text-xs text-secondary">Widget Type</label>
                     <select
                       value={newWidgetConfig.type}
                       onChange={(e) =>
@@ -572,13 +559,13 @@ export default function IoTDashboard() {
                   <div className="flex gap-2">
                     <button
                       onClick={addWidget}
-                      className="flex-1 rounded-full border border-emerald-400/40 px-3 py-2 text-xs font-semibold text-emerald-300 transition hover:border-emerald-300"
+                      className="flex-1 rounded-full border border-neon/40 px-3 py-2 text-xs font-semibold text-neon transition hover:border-emerald-300"
                     >
                       Add
                     </button>
                     <button
                       onClick={() => setShowAddWidget(false)}
-                      className="flex-1 rounded-full border border-slate-600 px-3 py-2 text-xs font-semibold text-slate-400 transition hover:border-slate-500"
+                      className="flex-1 rounded-full border border-slate-600 px-3 py-2 text-xs font-semibold text-secondary transition hover:border-slate-500"
                     >
                       Cancel
                     </button>
@@ -602,8 +589,8 @@ export default function IoTDashboard() {
             </div>
 
             {widgets.length === 0 && !showAddWidget && (
-              <div className="rounded-2xl border border-slate-700 bg-slate-950/60 p-8 text-center">
-                <p className="text-sm text-slate-400">
+              <div className="rounded-2xl border border-slate-700 bg-[#111111] p-8 text-center">
+                <p className="text-sm text-secondary">
                   No widgets yet. Connect to a broker and add widgets to display
                   MQTT data.
                 </p>
@@ -611,10 +598,10 @@ export default function IoTDashboard() {
             )}
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Sidebar: Serial Monitor & Help */}
-      <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6">
+      <Card className="p-6">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold">MQTT Monitor</h3>
           <span className="text-xs text-slate-500">{logEntries.length} logs</span>
@@ -631,7 +618,7 @@ export default function IoTDashboard() {
                 <span
                   className={
                     entry.type === "pub"
-                      ? "text-emerald-300"
+                      ? "text-neon"
                       : entry.type === "sub"
                         ? "text-sky-300"
                         : entry.type === "error"
@@ -648,29 +635,29 @@ export default function IoTDashboard() {
         </div>
         <button
           onClick={clearLog}
-          className="mt-3 w-full rounded-full border border-slate-700 px-3 py-2 text-xs font-semibold text-slate-400 transition hover:border-slate-500"
+          className="mt-3 w-full rounded-full border border-slate-700 px-3 py-2 text-xs font-semibold text-secondary transition hover:border-slate-500"
         >
           Clear Logs
         </button>
 
-        <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
+        <div className="mt-6 rounded-2xl border border-slate-800 bg-[#111111] p-4">
           <h4 className="text-sm font-semibold text-slate-200">Public Brokers</h4>
-          <ul className="mt-3 space-y-2 text-xs text-slate-400">
+          <ul className="mt-3 space-y-2 text-xs text-secondary">
             <li>
-              <code className="text-emerald-300">broker.mqtt.cool</code>
+              <code className="text-neon">broker.mqtt.cool</code>
             </li>
             <li>
-              <code className="text-emerald-300">test.mosquitto.org</code>
+              <code className="text-neon">test.mosquitto.org</code>
             </li>
             <li>
-              <code className="text-emerald-300">broker.emqx.io</code>
+              <code className="text-neon">broker.emqx.io</code>
             </li>
           </ul>
         </div>
 
-        <div className="mt-4 rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
+        <div className="mt-4 rounded-2xl border border-slate-800 bg-[#111111] p-4">
           <h4 className="text-sm font-semibold text-slate-200">Topic Examples</h4>
-          <ul className="mt-3 space-y-1 text-xs text-slate-400">
+          <ul className="mt-3 space-y-1 text-xs text-secondary">
             <li>• <code>sensors/temperature</code></li>
             <li>• <code>home/lights/kitchen</code></li>
             <li>• <code>device/status</code></li>
@@ -678,13 +665,7 @@ export default function IoTDashboard() {
           </ul>
         </div>
 
-        <Link
-          href="/"
-          className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-emerald-300 hover:text-emerald-200"
-        >
-          ← Back to home
-        </Link>
-      </div>
+      </Card>
     </section>
   );
 }
