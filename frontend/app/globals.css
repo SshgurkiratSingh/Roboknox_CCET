@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* ── Base Surfaces ── */
+  --bg-void: #000000;
+  /* page background — absolute black */
+  --bg-base: #0a0a0a;
+  /* cards, panels */
+  --bg-elevated: #111111;
+  /* hover states, active inputs */
+  --bg-glass: rgba(10, 10, 10, 0.55);
+  /* glassmorphic overlay on 3D scenes */
+
+  /* ── Neon Green Scale ── */
+  --neon: #39FF14;
+  /* THE accent — use nowhere else */
+  --neon-50: rgba(57, 255, 20, .50);
+  /* borders, dividers */
+  --neon-25: rgba(57, 255, 20, .25);
+  /* subtle borders */
+  --neon-08: rgba(57, 255, 20, .08);
+  /* active card background tint */
+  --neon-glow-sm: 0 0 8px #39FF14, 0 0 20px rgba(57, 255, 20, .35);
+  --neon-glow-lg: 0 0 16px #39FF14, 0 0 50px rgba(57, 255, 20, .25);
+  --neon-text-glow: 0 0 8px rgba(57, 255, 20, .8);
+
+  /* ── Text ── */
+  --text-primary: #FFFFFF;
+  --text-secondary: #888888;
+  --text-muted: #444444;
+  --text-accent: #39FF14;
+
+  /* ── Borders ── */
+  --border: 1px solid #1a1a1a;
+  --border-accent: 1px solid #39FF14;
+  --border-dim: 1px solid rgba(57, 255, 20, .25);
+
+  /* ── Status (minimal palette) ── */
+  --warn: #FFB800;
+  --error: #FF3B3B;
+
+  /* ── Motion ── */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);
+  --duration-fast: 100ms;
+  --duration-mid: 250ms;
+  --duration-slow: 500ms;
+}
+
+body {
+  color: var(--text-primary);
+  background: var(--bg-void);
+  font-family: var(--font-mono), monospace;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* 1. Scanline overlay — applied to body::after */
+@keyframes scanline {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 0 100vh;
+  }
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(to bottom,
+      transparent 0px, transparent 3px,
+      rgba(0, 0, 0, 0.03) 3px, rgba(0, 0, 0, 0.03) 4px);
+  animation: scanline 8s linear infinite;
+}
+
+/* 2. Neon pulse — active nav, important badges */
+@keyframes neon-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 4px #39FF14, 0 0 12px rgba(57, 255, 20, .35);
+  }
+
+  50% {
+    box-shadow: 0 0 10px #39FF14, 0 0 30px rgba(57, 255, 20, .5);
+  }
+}
+
+
+
+/* 4. Card entrance */
+.card-enter {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s var(--ease-out-expo), transform 0.3s var(--ease-out-expo);
+}
+
+.card-enter.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
