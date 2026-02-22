@@ -1,24 +1,43 @@
 'use client'
 
-import { Home, BookOpen, MessageSquare, Settings, LogOut, Radio, Activity, Calendar } from 'lucide-react'
+import { Home, BookOpen, MessageSquare, Settings, LogOut, Radio, Calendar } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { useSettingsStore } from '@/store/useSettingsStore'
 
 const navItems = [
-    { icon: Home, href: '/' },
-    { icon: Calendar, href: '/calendar' },
-    { icon: Radio, href: '/iot-dashboard' },
-    { icon: BookOpen, href: '/workshops' },
-    { icon: MessageSquare, href: '/forum' },
+    { icon: Home, label: 'Home', href: '/' },
+    { icon: Calendar, label: 'Calendar', href: '/calendar' },
+    { icon: Radio, label: 'IoT Studio', href: '/iot-dashboard' },
+    { icon: BookOpen, label: 'Workshops', href: '/workshops' },
+    { icon: MessageSquare, label: 'Forum', href: '/forum' },
 ]
 
 export function NavRail() {
     const pathname = usePathname()
+    const { navRailAppearance, navRailFixed } = useSettingsStore()
+
+    // Base width configurations
+    const isIconOnly = navRailAppearance === 'icon-only'
+    const isExpanded = navRailAppearance === 'icons-text'
+    const isFloating = isIconOnly
 
     return (
-        <nav className="w-14 shrink-0 border-r border-[#1a1a1a] bg-void flex flex-col items-center py-6 gap-6 relative z-40">
-            <div className="flex flex-col gap-6 flex-1">
+        <nav
+            className={cn(
+                "shrink-0 flex flex-col relative z-50 transition-all duration-300 group/nav",
+                isFloating
+                    ? "absolute left-4 top-1/2 -translate-y-1/2 h-auto py-4 bg-[#0a0a0a]/80 backdrop-blur-md border border-[#1a1a1a] rounded-[2rem] items-center shadow-[0_10px_40px_rgba(0,0,0,0.6)]"
+                    : "bg-void border-r border-[#1a1a1a] py-6 h-full",
+                isExpanded && !isFloating ? "w-48 items-start px-3" : (!isFloating ? "w-14 items-center" : "w-[3.25rem]"),
+                !navRailFixed && !isExpanded && !isIconOnly && "hover:w-48 hover:items-start hover:px-3 bg-void"
+            )}
+        >
+            <div className={cn(
+                "flex flex-col gap-3 flex-1 w-full",
+                isFloating && "items-center"
+            )}>
                 {navItems.map((item) => {
                     const isActive = pathname === item.href || (item.href !== '/' && pathname?.startsWith(item.href))
                     return (
@@ -26,30 +45,79 @@ export function NavRail() {
                             key={item.href}
                             href={item.href}
                             className={cn(
-                                "relative p-2 text-secondary hover:text-neon transition-colors duration-fast group",
-                                isActive && "text-neon"
+                                "group relative flex items-center gap-3 p-2.5 rounded-xl transition-all duration-fast",
+                                isActive ? "bg-neon/10 text-neon shadow-[0_0_10px_rgba(52,211,153,0.1)]" : "text-secondary hover:text-white hover:bg-[#1a1a1a]",
+                                isFloating && isActive && "bg-neon/20 shadow-[0_0_15px_rgba(52,211,153,0.2)] text-neon",
+                                isFloating && "p-2.5 rounded-full"
                             )}
+                            title={(!isExpanded && navRailFixed) || isFloating ? item.label : undefined}
                         >
-                            {isActive && (
-                                <div className="absolute left-[-16px] top-0 bottom-0 w-[3px] bg-neon shadow-neon-sm" />
-                            )}
-                            <item.icon className="w-5 h-5" style={{ filter: isActive ? 'drop-shadow(var(--neon-text-glow))' : 'none' }} />
+                            <item.icon className={cn(
+                                "w-5 h-5 shrink-0 transition-transform duration-fast scale-100 group-hover:scale-110",
+                                isActive && "drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]"
+                            )} />
 
-                            {/* Hover background */}
-                            <div className="absolute inset-0 bg-neon-08 opacity-0 group-hover:opacity-100 rounded-sm pointer-events-none transition-opacity duration-fast" />
+                            <span className={cn(
+                                "font-medium text-sm whitespace-nowrap overflow-hidden transition-all duration-300",
+                                isExpanded ? "w-24 opacity-100 ml-1" : "w-0 opacity-0",
+                                !navRailFixed && !isExpanded && !isIconOnly && "group-hover/nav:w-24 group-hover/nav:opacity-100 group-hover/nav:ml-1"
+                            )}>
+                                {item.label}
+                            </span>
                         </Link>
                     )
                 })}
             </div>
 
-            <div className="flex flex-col gap-6 items-center">
-                <button className="p-2 text-secondary hover:text-neon transition-colors duration-fast group relative">
-                    <Settings className="w-5 h-5" />
-                    <div className="absolute inset-0 bg-neon-08 opacity-0 group-hover:opacity-100 rounded-sm pointer-events-none transition-opacity duration-fast" />
-                </button>
-                <div className="w-6 h-[1px] bg-[#1a1a1a]" />
-                <button className="p-2 text-secondary hover:text-[#FF3B3B] transition-colors duration-fast">
-                    <LogOut className="w-5 h-5" />
+            <div className={cn(
+                "flex flex-col gap-3 w-full mt-auto",
+                (!isExpanded && navRailFixed) || isIconOnly ? "items-center" : "items-start group-hover/nav:items-start group-hover/nav:px-4"
+            )}>
+                <Link
+                    href="/settings"
+                    className={cn(
+                        "group relative flex items-center gap-3 p-2.5 rounded-xl transition-all duration-fast w-full focus:outline-none",
+                        pathname === '/settings' ? "bg-neon/10 text-neon shadow-[0_0_10px_rgba(52,211,153,0.1)]" : "text-secondary hover:text-white hover:bg-[#1a1a1a]",
+                        isFloating && "p-2.5 rounded-full",
+                        isFloating && pathname === '/settings' && "bg-neon/20 shadow-[0_0_15px_rgba(52,211,153,0.2)]"
+                    )}
+                    title={(!isExpanded && navRailFixed) || isFloating ? "Settings" : undefined}
+                >
+                    <Settings className={cn(
+                        "w-5 h-5 shrink-0 transition-transform duration-500 hover:rotate-90",
+                        pathname === '/settings' && "drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]"
+                    )} />
+                    <span className={cn(
+                        "font-medium text-sm whitespace-nowrap overflow-hidden transition-all duration-300",
+                        isExpanded ? "w-24 opacity-100 ml-1" : "w-0 opacity-0",
+                        !navRailFixed && !isExpanded && !isIconOnly && "group-hover/nav:w-24 group-hover/nav:opacity-100 group-hover/nav:ml-1"
+                    )}>
+                        Settings
+                    </span>
+                </Link>
+
+                <div className={cn(
+                    "h-[1px] bg-[#1a1a1a] transition-all duration-300",
+                    isExpanded ? "w-full my-1" : "w-6 my-1",
+                    !navRailFixed && !isExpanded && !isIconOnly && "group-hover/nav:w-full",
+                    isFloating && "w-6"
+                )} />
+
+                <button
+                    className={cn(
+                        "group relative flex items-center gap-3 p-2.5 rounded-xl transition-all duration-fast w-full text-left focus:outline-none text-secondary hover:text-[#FF3B3B] hover:bg-red-500/10",
+                        isFloating && "p-2.5 rounded-full"
+                    )}
+                    title={(!isExpanded && navRailFixed) || isFloating ? "Log Out" : undefined}
+                >
+                    <LogOut className="w-5 h-5 shrink-0" />
+                    <span className={cn(
+                        "font-medium text-sm whitespace-nowrap overflow-hidden transition-all duration-300",
+                        isExpanded ? "w-24 opacity-100 ml-1" : "w-0 opacity-0",
+                        !navRailFixed && !isExpanded && !isIconOnly && "group-hover/nav:w-24 group-hover/nav:opacity-100 group-hover/nav:ml-1"
+                    )}>
+                        Log Out
+                    </span>
                 </button>
             </div>
         </nav>

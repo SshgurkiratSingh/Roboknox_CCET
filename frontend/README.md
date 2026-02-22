@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Roboknox Dashboard
+
+A modern, responsive, hacker/cyberpunk themed IoT Dashboard and community platform built for the Roboknox CCET club.
+
+## Features
+
+- **IoT Studio**: An integrated toolchain including an MQTT Dashboard, Serial LED Portal, and 3D LED Cube Studio.
+- **Dynamic Dashboard**: Responsive layouts adapting to desktop, tablet, and mobile views.
+- **Activity & Metrics**: Mock data integration simulating real-time user activity, forum discussions, and club metrics.
+- **Settings Store**: Persisted local UI preferences (like the NavRail appearance) using `zustand`.
+
+## Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Tailwind CSS 
+- **Icons**: Lucide React
+- **State Management**: Zustand
+- **Package Manager**: Bun
 
 ## Getting Started
 
-First, run the development server:
+1. **Install dependencies:**
+   ```bash
+   bun install
+   ```
+2. **Run the development server:**
+   ```bash
+   bun run dev
+   ```
+3. Open [http://localhost:3000](http://localhost:3000) with your browser.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Project Structure
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- `/app`: Next.js App Router pages and API routes (simulated backend).
+- `/components`: Reusable React components (UI elements, IoT Studio components).
+- `/store`: Zustand state management files.
+- `/public`: Static assets.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Theming & Layout
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project focuses on a distinct "neon dark" aesthetic. Variables like `--neon` (`#10b981`), `bg-void` (`#0a0a0a`), and sleek `border-[#1a1a1a]` components are heavily utilized. Always prefer custom Tailwind extensions configured in `tailwind.config.ts` over default grays or blues to maintain the aesthetic.

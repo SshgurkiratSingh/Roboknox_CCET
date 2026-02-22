@@ -7,6 +7,8 @@ import React, {
   useState,
 } from "react";
 import { Card } from "@/components/ui/Card";
+import SerialLedPortal from "../../components/iot/SerialLedPortal";
+import LedCubeStudio from "../../components/iot/LedCubeStudio";
 
 type Widget = {
   id: string;
@@ -46,6 +48,8 @@ const generateId = () =>
   `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
 export default function IoTDashboard() {
+  const [activeTab, setActiveTab] = useState<"mqtt" | "serial" | "studio">("mqtt");
+
   const [isConnected, setIsConnected] = useState(false);
   const [config, setConfig] = useState<MQTTConfig>({
     broker: "broker.mqtt.cool",
@@ -246,7 +250,7 @@ export default function IoTDashboard() {
     <div className="rounded-2xl border border-slate-700 bg-[#111111] p-4">
       <p className="text-xs text-secondary">{widget.name}</p>
       <p className="mt-2 text-2xl font-semibold text-neon">
-        {widget.value}
+        {widget.value as React.ReactNode}
         {widget.unit && <span className="ml-1 text-sm">{widget.unit}</span>}
       </p>
       <p className="mt-1 text-xs text-slate-500">{widget.topic}</p>
@@ -264,7 +268,7 @@ export default function IoTDashboard() {
           <div>
             <p className="text-xs text-secondary">{widget.name}</p>
             <p className="mt-2 text-2xl font-semibold text-neon">
-              {widget.value}
+              {widget.value as React.ReactNode}
               {widget.unit && <span className="ml-1 text-sm">{widget.unit}</span>}
             </p>
           </div>
@@ -350,7 +354,7 @@ export default function IoTDashboard() {
         <div>
           <p className="text-xs text-secondary">{widget.name}</p>
           <p className="mt-2 text-2xl font-semibold text-neon">
-            {widget.value}
+            {widget.value as React.ReactNode}
           </p>
         </div>
       </div>
@@ -386,286 +390,330 @@ export default function IoTDashboard() {
   };
 
   return (
-    <section className="p-8 w-full max-w-[1400px] mx-auto grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-      {/* Main Content */}
-      <Card className="p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-6 border-b border-[#1a1a1a] pb-4">
-          <div>
-            <h2 className="font-display font-bold text-white text-xl tracking-wider">{"// IOT_DASHBOARD"}</h2>
-            <p className="mt-2 text-sm text-secondary font-mono">{statusMessage}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            {statusBadge}
-          </div>
+    <div className="p-4 sm:p-8 w-full max-w-[1400px] mx-auto min-h-screen text-white">
+      <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#1a1a1a] pb-6">
+        <div>
+          <h1 className="text-3xl font-display font-bold tracking-wider">{"// CONTROL_CENTER"}</h1>
+          <p className="mt-1 text-sm text-secondary font-mono">Manage connected devices and prototypes.</p>
         </div>
+        <div className="flex bg-[#0a0a0a] border border-[#1a1a1a] rounded-lg p-1">
+          <button
+            onClick={() => setActiveTab("mqtt")}
+            className={`px-4 py-2 text-xs font-semibold rounded-md transition ${activeTab === "mqtt" ? "bg-[#1a1a1a] text-neon" : "text-secondary hover:text-white"}`}
+          >
+            MQTT DASHBOARD
+          </button>
+          <button
+            onClick={() => setActiveTab("serial")}
+            className={`px-4 py-2 text-xs font-semibold rounded-md transition ${activeTab === "serial" ? "bg-[#1a1a1a] text-neon" : "text-secondary hover:text-white"}`}
+          >
+            SERIAL PORTAL
+          </button>
+          <button
+            onClick={() => setActiveTab("studio")}
+            className={`px-4 py-2 text-xs font-semibold rounded-md transition ${activeTab === "studio" ? "bg-[#1a1a1a] text-neon" : "text-secondary hover:text-white"}`}
+          >
+            LED STUDIO
+          </button>
+        </div>
+      </div>
 
-        <div className="mt-6 grid gap-4">
-          {/* Broker Configuration */}
-          <div className="rounded-2xl border border-slate-800 bg-[#111111] p-4">
-            <h3 className="text-sm font-semibold text-slate-200 mb-3">
-              MQTT Broker
-            </h3>
-            <div className="grid gap-3">
+      {activeTab === "mqtt" && (
+        <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+          {/* Main Content */}
+          <Card className="p-6">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-6 border-b border-[#1a1a1a] pb-4">
               <div>
-                <label className="text-xs text-secondary">Broker Address</label>
-                <input
-                  type="text"
-                  value={config.broker}
-                  onChange={(e) =>
-                    setConfig({ ...config, broker: e.target.value })
-                  }
-                  disabled={isConnected}
-                  className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 disabled:opacity-50"
-                  placeholder="broker.example.com"
-                />
+                <h2 className="font-display font-bold text-white text-xl tracking-wider">{"// MQTT_BROKER"}</h2>
+                <p className="mt-2 text-sm text-secondary font-mono">{statusMessage}</p>
               </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="text-xs text-secondary">Port</label>
-                  <input
-                    type="number"
-                    value={config.port}
-                    onChange={(e) =>
-                      setConfig({ ...config, port: Number(e.target.value) })
-                    }
-                    disabled={isConnected}
-                    className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 disabled:opacity-50"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-secondary">Client ID</label>
-                  <input
-                    type="text"
-                    value={config.clientId}
-                    onChange={(e) =>
-                      setConfig({ ...config, clientId: e.target.value })
-                    }
-                    disabled={isConnected}
-                    className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-xs text-slate-200 disabled:opacity-50"
-                  />
+              <div className="flex items-center gap-2">
+                {statusBadge}
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-4">
+              {/* Broker Configuration */}
+              <div className="rounded-2xl border border-slate-800 bg-[#111111] p-4">
+                <h3 className="text-sm font-semibold text-slate-200 mb-3">
+                  Connection Settings
+                </h3>
+                <div className="grid gap-3">
+                  <div>
+                    <label className="text-xs text-secondary">Broker Address</label>
+                    <input
+                      type="text"
+                      value={config.broker}
+                      onChange={(e) =>
+                        setConfig({ ...config, broker: e.target.value })
+                      }
+                      disabled={isConnected}
+                      className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 disabled:opacity-50 focus:outline-none focus:border-neon"
+                      placeholder="broker.example.com"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-xs text-secondary">Port</label>
+                      <input
+                        type="number"
+                        value={config.port}
+                        onChange={(e) =>
+                          setConfig({ ...config, port: Number(e.target.value) })
+                        }
+                        disabled={isConnected}
+                        className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 disabled:opacity-50 focus:outline-none focus:border-neon"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-secondary">Client ID</label>
+                      <input
+                        type="text"
+                        value={config.clientId}
+                        onChange={(e) =>
+                          setConfig({ ...config, clientId: e.target.value })
+                        }
+                        disabled={isConnected}
+                        className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-xs text-slate-200 disabled:opacity-50 focus:outline-none focus:border-neon"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-xs text-secondary">Username</label>
+                      <input
+                        type="text"
+                        value={config.username || ""}
+                        onChange={(e) =>
+                          setConfig({ ...config, username: e.target.value })
+                        }
+                        disabled={isConnected}
+                        className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 disabled:opacity-50 focus:outline-none focus:border-neon"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-secondary">Password</label>
+                      <input
+                        type="password"
+                        value={config.password || ""}
+                        onChange={(e) =>
+                          setConfig({ ...config, password: e.target.value })
+                        }
+                        disabled={isConnected}
+                        className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 disabled:opacity-50 focus:outline-none focus:border-neon"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex gap-2 pt-2">
+                    {!isConnected ? (
+                      <button
+                        onClick={connect}
+                        className="flex-1 rounded-full border border-neon/40 px-4 py-2 text-sm font-semibold text-neon transition hover:border-emerald-300"
+                      >
+                        Connect
+                      </button>
+                    ) : (
+                      <button
+                        onClick={disconnect}
+                        className="flex-1 rounded-full border border-red-500/40 px-4 py-2 text-sm font-semibold text-red-300 transition hover:border-red-300"
+                      >
+                        Disconnect
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="text-xs text-secondary">Username</label>
-                  <input
-                    type="text"
-                    value={config.username || ""}
-                    onChange={(e) =>
-                      setConfig({ ...config, username: e.target.value })
-                    }
-                    disabled={isConnected}
-                    className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 disabled:opacity-50"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-secondary">Password</label>
-                  <input
-                    type="password"
-                    value={config.password || ""}
-                    onChange={(e) =>
-                      setConfig({ ...config, password: e.target.value })
-                    }
-                    disabled={isConnected}
-                    className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 disabled:opacity-50"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-2 pt-2">
-                {!isConnected ? (
+
+              {/* Widgets Grid */}
+              <div>
+                <div className="mb-3 flex items-center justify-between mt-4">
+                  <h3 className="text-sm font-semibold text-slate-200">Widgets</h3>
                   <button
-                    onClick={connect}
-                    className="flex-1 rounded-full border border-neon/40 px-4 py-2 text-sm font-semibold text-neon transition hover:border-emerald-300"
+                    onClick={() => setShowAddWidget(!showAddWidget)}
+                    disabled={!isConnected}
+                    className="text-xs rounded px-2 py-1 border border-neon/40 text-neon hover:border-emerald-300 transition disabled:opacity-40"
                   >
-                    Connect
+                    + Add Widget
                   </button>
-                ) : (
-                  <button
-                    onClick={disconnect}
-                    className="flex-1 rounded-full border border-red-500/40 px-4 py-2 text-sm font-semibold text-red-300 transition hover:border-red-300"
-                  >
-                    Disconnect
-                  </button>
+                </div>
+
+                {showAddWidget && (
+                  <div className="mb-4 rounded-2xl border border-slate-700 bg-[#111111] p-4">
+                    <div className="grid gap-3">
+                      <div>
+                        <label className="text-xs text-secondary">Widget Name</label>
+                        <input
+                          type="text"
+                          value={newWidgetConfig.name}
+                          onChange={(e) =>
+                            setNewWidgetConfig({
+                              ...newWidgetConfig,
+                              name: e.target.value,
+                            })
+                          }
+                          className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-neon"
+                          placeholder="e.g., Temperature Sensor"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-secondary">MQTT Topic</label>
+                        <input
+                          type="text"
+                          value={newWidgetConfig.topic}
+                          onChange={(e) =>
+                            setNewWidgetConfig({
+                              ...newWidgetConfig,
+                              topic: e.target.value,
+                            })
+                          }
+                          className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-neon"
+                          placeholder="e.g., sensors/temperature"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-secondary">Widget Type</label>
+                        <select
+                          value={newWidgetConfig.type}
+                          onChange={(e) =>
+                            setNewWidgetConfig({
+                              ...newWidgetConfig,
+                              type: e.target.value as Widget["type"],
+                            })
+                          }
+                          className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-neon"
+                        >
+                          <option value="text-display">Text Display</option>
+                          <option value="gauge">Gauge</option>
+                          <option value="toggle">Toggle</option>
+                          <option value="button">Button</option>
+                          <option value="slider">Slider</option>
+                        </select>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={addWidget}
+                          className="flex-1 rounded-full border border-neon/40 px-3 py-2 text-xs font-semibold text-neon transition hover:border-emerald-300"
+                        >
+                          Add
+                        </button>
+                        <button
+                          onClick={() => setShowAddWidget(false)}
+                          className="flex-1 rounded-full border border-slate-600 px-3 py-2 text-xs font-semibold text-secondary transition hover:border-slate-500"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {widgets.map((widget) => (
+                    <div key={widget.id} className="relative group">
+                      {renderWidget(widget)}
+                      <button
+                        onClick={() => removeWidget(widget.id)}
+                        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 rounded p-1 bg-red-500/20 text-red-300 text-xs transition hover:bg-red-500/40"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                {widgets.length === 0 && !showAddWidget && (
+                  <div className="rounded-2xl border border-slate-700 bg-[#111111] p-8 text-center">
+                    <p className="text-sm text-secondary">
+                      No widgets yet. Connect to a broker and add widgets to display
+                      MQTT data.
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
-          </div>
+          </Card>
 
-          {/* Widgets Grid */}
-          <div>
-            <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-slate-200">Widgets</h3>
-              <button
-                onClick={() => setShowAddWidget(!showAddWidget)}
-                disabled={!isConnected}
-                className="text-xs rounded px-2 py-1 border border-neon/40 text-neon hover:border-emerald-300 transition disabled:opacity-40"
-              >
-                + Add Widget
-              </button>
+          {/* Sidebar: Serial Monitor & Help */}
+          <Card className="p-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold">MQTT Monitor</h3>
+              <span className="text-xs text-slate-500">{logEntries.length} logs</span>
             </div>
-
-            {showAddWidget && (
-              <div className="mb-4 rounded-2xl border border-slate-700 bg-[#111111] p-4">
-                <div className="grid gap-3">
-                  <div>
-                    <label className="text-xs text-secondary">Widget Name</label>
-                    <input
-                      type="text"
-                      value={newWidgetConfig.name}
-                      onChange={(e) =>
-                        setNewWidgetConfig({
-                          ...newWidgetConfig,
-                          name: e.target.value,
-                        })
-                      }
-                      className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-sm text-slate-200"
-                      placeholder="e.g., Temperature Sensor"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-secondary">MQTT Topic</label>
-                    <input
-                      type="text"
-                      value={newWidgetConfig.topic}
-                      onChange={(e) =>
-                        setNewWidgetConfig({
-                          ...newWidgetConfig,
-                          topic: e.target.value,
-                        })
-                      }
-                      className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-sm text-slate-200"
-                      placeholder="e.g., sensors/temperature"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-secondary">Widget Type</label>
-                    <select
-                      value={newWidgetConfig.type}
-                      onChange={(e) =>
-                        setNewWidgetConfig({
-                          ...newWidgetConfig,
-                          type: e.target.value as Widget["type"],
-                        })
-                      }
-                      className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-sm text-slate-200"
-                    >
-                      <option value="text-display">Text Display</option>
-                      <option value="gauge">Gauge</option>
-                      <option value="toggle">Toggle</option>
-                      <option value="button">Button</option>
-                      <option value="slider">Slider</option>
-                    </select>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={addWidget}
-                      className="flex-1 rounded-full border border-neon/40 px-3 py-2 text-xs font-semibold text-neon transition hover:border-emerald-300"
-                    >
-                      Add
-                    </button>
-                    <button
-                      onClick={() => setShowAddWidget(false)}
-                      className="flex-1 rounded-full border border-slate-600 px-3 py-2 text-xs font-semibold text-secondary transition hover:border-slate-500"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              {widgets.map((widget) => (
-                <div key={widget.id} className="relative group">
-                  {renderWidget(widget)}
-                  <button
-                    onClick={() => removeWidget(widget.id)}
-                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 rounded p-1 bg-red-500/20 text-red-300 text-xs transition hover:bg-red-500/40"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {widgets.length === 0 && !showAddWidget && (
-              <div className="rounded-2xl border border-slate-700 bg-[#111111] p-8 text-center">
-                <p className="text-sm text-secondary">
-                  No widgets yet. Connect to a broker and add widgets to display
-                  MQTT data.
+            <div className="mt-4 max-h-96 overflow-auto rounded-2xl border border-slate-800 bg-slate-950/80 p-4 text-xs text-slate-300 space-y-2">
+              {logEntries.length === 0 ? (
+                <p className="text-slate-500">
+                  No activity yet. Connect to broker to see logs.
                 </p>
-              </div>
-            )}
-          </div>
-        </div>
-      </Card>
+              ) : (
+                logEntries.map((entry) => (
+                  <div key={entry.id} className="flex gap-2">
+                    <span className="text-slate-500 min-w-fit">{entry.timestamp}</span>
+                    <span
+                      className={
+                        entry.type === "pub"
+                          ? "text-neon"
+                          : entry.type === "sub"
+                            ? "text-sky-300"
+                            : entry.type === "error"
+                              ? "text-red-300"
+                              : "text-slate-300"
+                      }
+                    >
+                      {entry.type.toUpperCase()}
+                    </span>
+                    <span className="text-slate-200">{entry.message}</span>
+                  </div>
+                ))
+              )}
+            </div>
+            <button
+              onClick={clearLog}
+              className="mt-3 w-full rounded-full border border-slate-700 px-3 py-2 text-xs font-semibold text-secondary transition hover:border-slate-500"
+            >
+              Clear Logs
+            </button>
 
-      {/* Sidebar: Serial Monitor & Help */}
-      <Card className="p-6">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">MQTT Monitor</h3>
-          <span className="text-xs text-slate-500">{logEntries.length} logs</span>
-        </div>
-        <div className="mt-4 max-h-96 overflow-auto rounded-2xl border border-slate-800 bg-slate-950/80 p-4 text-xs text-slate-300 space-y-2">
-          {logEntries.length === 0 ? (
-            <p className="text-slate-500">
-              No activity yet. Connect to broker to see logs.
-            </p>
-          ) : (
-            logEntries.map((entry) => (
-              <div key={entry.id} className="flex gap-2">
-                <span className="text-slate-500 min-w-fit">{entry.timestamp}</span>
-                <span
-                  className={
-                    entry.type === "pub"
-                      ? "text-neon"
-                      : entry.type === "sub"
-                        ? "text-sky-300"
-                        : entry.type === "error"
-                          ? "text-red-300"
-                          : "text-slate-300"
-                  }
-                >
-                  {entry.type.toUpperCase()}
-                </span>
-                <span className="text-slate-200">{entry.message}</span>
-              </div>
-            ))
-          )}
-        </div>
-        <button
-          onClick={clearLog}
-          className="mt-3 w-full rounded-full border border-slate-700 px-3 py-2 text-xs font-semibold text-secondary transition hover:border-slate-500"
-        >
-          Clear Logs
-        </button>
+            <div className="mt-6 rounded-2xl border border-slate-800 bg-[#111111] p-4">
+              <h4 className="text-sm font-semibold text-slate-200">Public Brokers</h4>
+              <ul className="mt-3 space-y-2 text-xs text-secondary">
+                <li>
+                  <code className="text-neon">broker.mqtt.cool</code>
+                </li>
+                <li>
+                  <code className="text-neon">test.mosquitto.org</code>
+                </li>
+                <li>
+                  <code className="text-neon">broker.emqx.io</code>
+                </li>
+              </ul>
+            </div>
 
-        <div className="mt-6 rounded-2xl border border-slate-800 bg-[#111111] p-4">
-          <h4 className="text-sm font-semibold text-slate-200">Public Brokers</h4>
-          <ul className="mt-3 space-y-2 text-xs text-secondary">
-            <li>
-              <code className="text-neon">broker.mqtt.cool</code>
-            </li>
-            <li>
-              <code className="text-neon">test.mosquitto.org</code>
-            </li>
-            <li>
-              <code className="text-neon">broker.emqx.io</code>
-            </li>
-          </ul>
-        </div>
+            <div className="mt-4 rounded-2xl border border-slate-800 bg-[#111111] p-4">
+              <h4 className="text-sm font-semibold text-slate-200">Topic Examples</h4>
+              <ul className="mt-3 space-y-1 text-xs text-secondary">
+                <li>• <code>sensors/temperature</code></li>
+                <li>• <code>home/lights/kitchen</code></li>
+                <li>• <code>device/status</code></li>
+                <li>• <code>iot/humidity/bedroom</code></li>
+              </ul>
+            </div>
 
-        <div className="mt-4 rounded-2xl border border-slate-800 bg-[#111111] p-4">
-          <h4 className="text-sm font-semibold text-slate-200">Topic Examples</h4>
-          <ul className="mt-3 space-y-1 text-xs text-secondary">
-            <li>• <code>sensors/temperature</code></li>
-            <li>• <code>home/lights/kitchen</code></li>
-            <li>• <code>device/status</code></li>
-            <li>• <code>iot/humidity/bedroom</code></li>
-          </ul>
-        </div>
+          </Card>
+        </section>
+      )}
 
-      </Card>
-    </section>
+      {activeTab === "serial" && (
+        <Card className="p-6">
+          <SerialLedPortal />
+        </Card>
+      )}
+
+      {activeTab === "studio" && (
+        <Card className="p-6">
+          <LedCubeStudio initialFrames={[]} />
+        </Card>
+      )}
+
+    </div>
   );
 }

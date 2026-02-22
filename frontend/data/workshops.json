@@ -1,0 +1,26 @@
+[
+    {
+        "id": "led-cube-3x3x3",
+        "title": "3x3x3 LED Cube Construction",
+        "subtitle": "Build your own 3D volumetric display and code custom animations.",
+        "level": "Beginner",
+        "duration": "2.5 Hours",
+        "highlights": [
+            "Soldering basics",
+            "Matrix multiplexing",
+            "Arduino C++ coding"
+        ],
+        "icon": "cube",
+        "resources": [
+            {
+                "label": "Wiring Schematic",
+                "href": "#"
+            },
+            {
+                "label": "Starter Code template",
+                "href": "#"
+            }
+        ],
+        "frames": []
+    }
+]
